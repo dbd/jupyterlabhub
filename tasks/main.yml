@@ -5,10 +5,10 @@
       description: EPEL yum repo
       baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
 
-# - name: install epel key
-#   rpm_key:
-#       state: present
-#       key: https://archive.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+- name: install epel key
+  rpm_key:
+      state: present
+      key: https://archive.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
 
 - name: install packages
   yum: pkg={{item}} state=latest
