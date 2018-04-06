@@ -1,5 +1,4 @@
 ---
-hostname:
 cert_email:
 hostname:
 jh_admin_users:
@@ -7,4 +6,4 @@ jh_admin_users:
 jh_users:
   -
 git_client_id:
-git_client_secret: 
+git_client_secret:
