@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Derek Daniels
+  description: Jupyterhub with Lab extension and GitHub Oauth
+
+  license: license (GPLv2, CC-BY, etc)
+
+  min_ansible_version: 1.3
+
+  platforms:
+  - name: EL
+    versions:
+    - 7
+
+  galaxy_tags:
+    - jupyterhub
+    - jupyterlab
+
+
+dependencies: []

@@ -1,0 +1,13 @@
+---
+- name: restart nginx
+  systemd:
+    name: nginx
+    state: restarted
+
+- name: reload systemd
+  systemd: daemon-reload=yes
+
+- name: restart service
+  systemd:
+    name: jupyterhub
+    state: restarted

@@ -1,0 +1,21 @@
+c.JupyterHub.authenticator_class = 'oauthenticator.GitHubOAuthenticator'
+c.GitHubOAuthenticator.oauth_callback_url = 'https://{{hostname}}/hub/oauth_callback'
+c.GitHubOAuthenticator.client_id = '{{git_client_id}}'
+c.GitHubOAuthenticator.client_secret = '{{git_client_secret}}'
+c.LocalAuthenticator.create_system_users = True
+c.Authenticator.whitelist = {"{{ jh_users|join('", "') }}"}
+c.Authenticator.whitelist = {"{{ jh_admin_users|join('", "') }}"}
+c.Spawner.notebook_dir = '~/notebooks'
+c.JupyterHub.ssl_cert = '/etc/letsencrypt/live/{{hostname}}/fullchain.pem'
+c.JupyterHub.ssl_key = '/etc/letsencrypt/live/{{hostname}}/privkey.pem'
+c.JupyterHub.cookie_secret_file = '/etc/jupyterhub_cookie'
+# c.JupyterHub.proxy_cmd = ['/usr/local/bin/configurable-http-proxy']
+c.JupyterHub.port = 443
+c.JupyterHub.ip = '0.0.0.0'
+c.Spawner.default_url = '/lab'
+c.JupyterHub.hub_connect_port = 0
+
+# Let the Systemctl aware of all the environment path
+import os
+for var in os.environ:
+    c.Spawner.env_keep.append(var)

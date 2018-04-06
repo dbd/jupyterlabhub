@@ -1,0 +1,122 @@
+---
+- name: ensure epel
+  yum_repository:
+      name: epel
+      description: EPEL yum repo
+      baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+
+# - name: install epel key
+#   rpm_key:
+#       state: present
+#       key: https://archive.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+
+- name: install packages
+  yum: pkg={{item}} state=latest
+  with_items:
+      - python34-pip
+      - nodejs
+      - nginx
+      - certbot
+      - python34-devel
+      - gcc
+      - gcc-c++
+
+- name: install python packages
+  pip: name={{item}} state=present executable=pip3
+  with_items:
+      - jupyterhub
+      - notebook
+      - jupyterlab
+      - oauthenticator
+      - pandas
+
+- name: install npm packages
+  npm:
+      name: configurable-http-proxy
+      global: yes
+
+- name: create certs
+  command: certbot certonly --standalone -d {{ hostname }} -m {{ cert_email }} --agree-tos --keep-until-expiring
+
+- name: copy jh_config.py
+  template:
+    src: jupyterhub_config.py.j2
+    dest: /etc/jupyterhub_config.py
+  notify:
+    - restart service
+
+- name: create notebook directory for skeleton
+  file:
+    path: /etc/skel/notebooks
+    state: directory
+    mode: 0755
+
+- name: ensure users exist for login
+  user:
+    name: "{{item}}"
+  with_items:
+    - "{{jh_users}}"
+
+- name: ensure admin users exist for login
+  user:
+    name: "{{item}}"
+  with_items:
+    - "{{jh_admin_users}}"
+
+- name: copy jh.service
+  copy:
+    src: jupyterhub.service
+    dest: /lib/systemd/system/jupyterhub.service
+  notify:
+    - reload systemd
+
+- name: create working directory for jh service
+  file:
+    path: /etc/jupyterhub
+    state: directory
+    mode: 0755
+
+- name: start jupyterhub
+  systemd:
+    name: jupyterhub
+    state: started
+    enabled: yes
+
+- name: create nginx directory
+  file: path={{item}} state=directory mode=0755
+  with_items:
+    - /etc/nginx/sites-enabled
+    - /etc/nginx/sites-available
+
+- name: configure nginx
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    mode: 0644
+  notify: restart nginx
+
+- name: configure nginx site
+  template:
+    src: site.conf.j2
+    dest: "/etc/nginx/sites-available/{{ hostname }}.conf"
+    mode: 0644
+  notify: restart nginx
+
+- name: ensure nginx started
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: de-activate default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: activate jupyterhub nginx site
+  file:
+    src: "/etc/nginx/sites-available/{{ hostname }}.conf"
+    dest: "/etc/nginx/sites-enabled/{{ hostname }}.conf"
+    state: link
+  notify: restart nginx
