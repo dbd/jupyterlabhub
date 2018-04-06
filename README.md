@@ -21,9 +21,21 @@ No other dependencies are needed.
 Example Playbook
 ----------------
 
-    - hosts: servers
-      roles:
-         - { role: Jupyterlabhub, hostname: example.com, cert_email: webmaster@example.com }
+```yaml
+    - hosts: dev
+      tasks:
+      - include_role:
+           name: jupyterlabhub
+        vars:
+          cert_email: example@example.com
+          hostname: example.com
+          jh_admin_users:
+            - dbd # These are the github usernames that will also be local accounts
+          jh_users:
+            - dbd
+          git_client_id: your_github_oauth2_client_id
+          git_client_secret: your_github_oauth2_client_secret
+```
 
 License
 -------
