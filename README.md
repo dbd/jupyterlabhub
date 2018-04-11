@@ -6,12 +6,30 @@ Performs a minimal install of jupyterhub, the lab extension, GitHub Oauth, a let
 Requirements
 ------------
 
-No other requirements are needed.
+You must create a new [GitHub OAuth App](https://github.com/settings/developers). This is used for the oauthenticator.
 
 Role Variables
 --------------
+```yaml
+cert_email:
+  # Email to used for certificate
+hostname:
+  # Hostname of server. Used for cert and nginx config
+jh_admin_users:
+  -
+  # List of github users that will have admin rights to jupyterhub config/kernels
+jh_users:
+  -
+  # list of github users that will be able to login to server
+git_client_id:
+  # Created from GitHub OAuth App
+git_client_secret:
+  # Created from GitHub OAuth App
+extra_pip_packages:
+  -
+  # List of additional pip packages to install for all users
+```
 
-There are only two variables, the hostname that is used in the cert/nginx config, and the email to be used to register the certificate. See the example for naming.
 
 Dependencies
 ------------
