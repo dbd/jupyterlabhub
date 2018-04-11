@@ -7,3 +7,4 @@ jh_users:
   -
 git_client_id:
 git_client_secret:
+extra_pip_packages:

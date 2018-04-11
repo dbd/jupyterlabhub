@@ -30,6 +30,11 @@
       - oauthenticator
       - pandas
 
+- name: install extra python packages
+  pip: name={{item}} state=present executable=pip3
+  with_items:
+    - "{{extra_pip_packages}}"
+
 - name: install npm packages
   npm:
       name: configurable-http-proxy
